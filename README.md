@@ -9,6 +9,7 @@ A secure shell client which uses known private keys to easily allow
 for forced commands to be run.
 
 Usage:
+
 `issh <username> <hostname> <key-seed>`
 
   Connect to host <hostname> using the private key based on the

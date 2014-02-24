@@ -8,8 +8,8 @@ Copyright (c) 2014 James Andariese
 A secure shell client which uses known private keys to easily allow
 for forced commands to be run.
 
-== Usage ==
-
+Usage
+-----
 
 `issh <username> <hostname> <key-seed>`
 
@@ -23,7 +23,8 @@ for forced commands to be run.
   Print out the public key generated from the private key based on
   the seed token, <key-seed>
 
-== Description ==
+Description
+-----------
 
 The goal of this project is to make forced commands easier to manage by making a few assumptions that cause it to be extremely insecure.
 
@@ -38,7 +39,8 @@ The third (and also only "assumption", actually) is in the second cause of insec
 
 You have been warned.
 
-== Tutorial ==
+Tutorial
+--------
 
 In this walkthrough, we will export "ps auxww" via issh.  It will run as root.
 

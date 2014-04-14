@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"code.google.com/p/go.crypto/ssh"
 	"code.google.com/p/go.text/unicode/norm"
-	"crypto"
+	//"crypto"
 	"crypto/dsa"
 	"errors"
-	"io"
+	//"io"
 	//"log"
 	"math/big"
 	"os"
@@ -45,6 +45,7 @@ type keyring struct {
 
 var KeyringError = errors.New("Invalid key specified")
 
+/*
 func (k *keyring) Key(i int) (ssh.PublicKey, error) {
 	if i != 0 {
 		return nil, nil
@@ -77,6 +78,7 @@ func (k *keyring) Sign(i int, rand io.Reader, data []byte) ([]byte, error) {
 
 	return sig, nil
 }
+*/
 
 func generateKey(seed_token string) (key *dsa.PrivateKey) {
 	g, p, q := params.G, params.P, params.Q
@@ -115,12 +117,28 @@ func GetAuthorizedKey(seed string) ([]byte, error) {
 func Run(username, hostname string, port uint16, seed string) ([]byte, int, error) {
 	key := generateKey(seed)
 
+/*
 	config := &ssh.ClientConfig{
 		User: username,
 		Auth: []ssh.ClientAuth{
 			ssh.ClientAuthKeyring(&keyring{key: key}),
 		},
 	}
+*/
+
+	signer, err := ssh.NewSignerFromKey(key)
+
+	if err != nil {
+		panic("Could not create a signer from the key: " + err.Error())
+	}
+
+	config := &ssh.ClientConfig{
+		User: username,
+		Auth: []ssh.AuthMethod{
+			ssh.PublicKeys(signer),
+		},
+	}
+
 
 	client, err := ssh.Dial("tcp", fmt.Sprintf("%s:%d", hostname, port), config)
 	if err != nil {

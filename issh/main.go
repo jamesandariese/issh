@@ -18,14 +18,32 @@ var user_host_port_re, _ = regexp.Compile("(([^@]+)@)?" +
 	"6[0-4][0-9][0-9][0-9]|" +
 	"[1-5][0-9]{0,4}))?")
 
-func parseUserHostPort(str string) (user, host string, port int) {
+func parseUserHostPort(str string) (user, host string, port uint16) {
+        // should we allow people to use a space as a username?
+        // is that valuable?  not really but I don't want to change
+        // the char class in the regex and inconsistency is terrible
+        // so the only invalid username in issh will be anything with
+        // @ in it.
+        
+	// defaults
+	user = "root"
+        port = 22
+
 	matches := user_host_port_re.FindStringSubmatch(str)
-	user = matches[2]
+
+        if len(matches[2]) > 0 {
+            user = matches[2]
+        }
+
 	host = matches[3]
-	port, _ = strconv.Atoi(matches[5])
+
+        // the port can only be a valid uint16 but go is a bit set in its ways already
+        if len(matches[5]) > 0 {
+	    portint, _ := strconv.Atoi(matches[5])
+            port = uint16(portint)
+        }
 	return
 }
-
 
 var show_key = flag.Bool("K", false, "Display the public key associated with the provided arguments")
 
@@ -55,7 +73,7 @@ func main() {
 	}
 
 	user, host, port := parseUserHostPort(flag.Arg(1))
-	stdout, exitcode, err := issh.Run(user, host, uint16(port), flag.Arg(0))
+	stdout, exitcode, err := issh.Run(user, host, port, flag.Arg(0))
 	if err != nil {
 		panic("Failed to execute remote command: " + err.Error())
 	}

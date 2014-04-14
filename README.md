@@ -11,7 +11,7 @@ for forced commands to be run.
 Usage
 -----
 
-`issh <username> <hostname> <key-seed>`
+`issh <key-seed> [<username>@]<hostname>[:port]`
 
   Connect to host <hostname> using the private key based on the
   seed token, <key-seed>.  This depends on there being a forced
@@ -31,11 +31,13 @@ The goal of this project is to make forced commands easier to manage by making a
 First off, there is no host key checking.  The reasoning for this is simple: if you have a load balanced cluster, and want to do something
 [horrible] to monitor it such as use ssh then forced commands are the way to go -- if you use forced commands, you will end up with ssh -o StrictHostKeyChecking=no -q -i select-a-command.pub -l user host eventually.  You'll likely reuse this key on multiple hosts for multiple purposes to avoid having to generate a new key every time.  You'll likely also have forgotten -q so you'll get a warning every time until you add the host key.  You'll add it first as your user (or root, probably) then try to figure out why your service data is still filled with warnings about SSH rather than the expected output.  Then you'll finally add the host key with su nagios.  Then, one fateful day, that box will die and you have to do it all over again with its replacement.  This will happen a few times until you just add the -q.
 
-No host key checking.  It's good to have but you'll spend a lot of time bypassing it anyway.
+No host key checking.  It's good to have but you'll spend a lot of time bypassing it anyway when using ssh directly.  There are plans in the future for potentially supporting DNS-based host key checking or for listing multiple fingerprints on the command line but this is fairly low priority.
 
-Second, the key is mostly known to everyone (p, q, g are always known with issh) and the other is easily guessed because it's almost certainly both English and related to the command being run.  The point of issh is to allow it to be put into scripts and to allow things that are relatively harmless to be run.  If it's considerably more costly to do this than to just serve up a DDoS on ssh itself, it shouldn't be in a forced command run through issh.  One example of how to use this is to have the "ipvs" key mapped to "ipvsadm -L -n".
+Second, the key is mostly known to everyone (p, q, g are always known with issh) and the other is easily guessed because it's almost certainly both English and related to the command being run.  The point of issh is to allow it to be put into scripts and to allow things that are relatively harmless to be run.  If it's considerably more costly to do this than to just serve up a DDoS on ssh itself, it shouldn't be in a forced command run through issh.  One example of how to use this is to have the "ipvs" key mapped to "ipvsadm -L -n".  It's important that -n is used in this example.
 
 The third (and also only "assumption", actually) is in the second cause of insecurity: this assumes you're not doing stupid and dangerous things in forced commands.  You shouldn't be anyway but you really shouldn't be with issh.
+
+Consider it a similarly secure, slightly less efficient SNMP.
 
 You have been warned.
 

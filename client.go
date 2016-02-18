@@ -3,8 +3,8 @@ package issh
 import (
 	//"flag"
 	"fmt"
-	"code.google.com/p/go.crypto/ssh"
-	"code.google.com/p/go.text/unicode/norm"
+	"golang.org/x/crypto/ssh"
+	"golang.org/x/text/unicode/norm"
 	//"crypto"
 	"crypto/dsa"
 	"errors"

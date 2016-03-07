@@ -8,6 +8,10 @@ Copyright (c) 2014 James Andariese
 A secure shell client which uses known private keys to easily allow
 for forced commands to be run.
 
+> Consider it a similarly secure, slightly less efficient SNMP.
+
+_But it sure is a lot easier to customize._
+
 Usage
 -----
 
